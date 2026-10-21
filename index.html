@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Knowbook</title>
+<meta name="theme-color" content="#0E6F66">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF2F1;--surface:#fff;--ink:#13211F;--muted:#5B6D6A;--line:#D5DFDD;
+  --accent:#0E6F66;--accent-ink:#fff;--accent-soft:#D8EBE8;--warn:#A8650A;--danger:#B3261E;
+  --av-bg:88%;--av-fg:26%;
+  --shadow:0 1px 2px rgba(14,60,56,.08),0 6px 18px -8px rgba(14,60,56,.18);
+  --head:'Bricolage Grotesque','Inter',system-ui,sans-serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.2,.9,.3,1.2);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1413;--surface:#142120;--ink:#E6F0EE;--muted:#8FA5A1;--line:#223533;
+  --accent:#4DC2B3;--accent-ink:#06201C;--accent-soft:#17332F;--warn:#E8B04A;--danger:#FF8A80;
+  --av-bg:22%;--av-fg:80%;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px -8px rgba(0,0,0,.6);}}
+:root[data-theme="dark"]{
+  --bg:#0C1413;--surface:#142120;--ink:#E6F0EE;--muted:#8FA5A1;--line:#223533;
+  --accent:#4DC2B3;--accent-ink:#06201C;--accent-soft:#17332F;--warn:#E8B04A;--danger:#FF8A80;
+  --av-bg:22%;--av-fg:80%;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px -8px rgba(0,0,0,.6);}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.7 var(--body);min-height:100vh;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:env(safe-area-inset-top)}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:14px 0 8px}
+h1{font:700 28px/1.1 var(--head);letter-spacing:-.03em}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;color:var(--muted);
+  transition:transform .15s var(--ease),background-color .15s}
+.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
+.icon-btn:active{transform:scale(.92)}
+.search{position:relative;padding-bottom:10px}
+.search input{width:100%;height:48px;border-radius:14px;border:1px solid var(--line);background:var(--surface);
+  padding:0 16px 0 44px;font-size:16px;box-shadow:var(--shadow)}
+.search svg{position:absolute;left:14px;top:13px;color:var(--muted);pointer-events:none}
+.search input::placeholder{color:var(--muted)}
+
+section.group{margin-top:22px}
+.group>h2{display:flex;align-items:baseline;gap:10px;font:700 20px/1.2 var(--head);letter-spacing:-.02em;
+  padding-bottom:8px;border-bottom:2px solid var(--ink);margin-bottom:6px}
+.group>h2 em{font:500 13px var(--body);font-style:normal;color:var(--muted);letter-spacing:0}
+.group>h2.sm{font-size:16px;border-bottom:1px solid var(--line)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 4px;border-bottom:1px solid var(--line);
+  border-radius:10px;transition:background-color .15s}
+.row:hover{background:var(--accent-soft)}
+.row:active{background:var(--accent-soft)}
+.rt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.rt b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt small{color:var(--muted);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row time{font-size:13px;color:var(--muted);white-space:nowrap}
+.rt small.due{color:var(--warn);font-weight:600}
+.av{--s:44px;width:var(--s);height:var(--s);flex:none;border-radius:50%;display:grid;place-items:center;overflow:hidden;
+  font:700 16px var(--head);letter-spacing:-.02em;
+  background:hsl(var(--h) 38% var(--av-bg));color:hsl(var(--h) 55% var(--av-fg))}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.lg{--s:84px;font-size:30px}
+
+.upcoming{margin-top:14px;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:6px 14px}
+.upcoming .row:last-child,.list .row:last-child{border-bottom:0}
+.upcoming h2{font:600 14px var(--body);color:var(--muted);padding:8px 0 0}
+.letter{font:700 14px var(--head);color:var(--accent);padding:14px 4px 2px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
+  font-size:14px;transition:transform .15s var(--ease)}
+.chip:active{transform:scale(.94)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+.empty{padding:48px 8px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font:600 18px var(--head);margin-bottom:4px}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 72px 1fr;align-items:center;height:68px}
+.tab{height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;
+  font-weight:500;color:var(--muted);transition:color .15s}
+.tab[aria-current="page"]{color:var(--accent);font-weight:600}
+.fab{width:56px;height:56px;margin:0 auto;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;transform:translateY(-14px);
+  box-shadow:0 2px 4px rgba(14,111,102,.3),0 10px 22px -6px rgba(14,111,102,.55);
+  transition:transform .2s var(--ease)}
+.fab:active{transform:translateY(-14px) scale(.92)}
+
+/* profile */
+.pbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.phead{display:flex;gap:16px;align-items:center;padding:6px 0 14px}
+.phead .av{cursor:pointer;border:0;padding:0}
+.name{flex:1;min-width:0;width:100%;font:700 26px/1.15 var(--head);letter-spacing:-.03em;background:none;border:0;
+  border-bottom:2px solid transparent;padding:4px 0}
+.name:focus{outline:0;border-bottom-color:var(--accent)}
+.card{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:6px 16px}
+.field{display:flex;flex-direction:column;padding:10px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border-bottom:0}
+.field label{font-size:13px;color:var(--muted);line-height:1.4}
+.field input{border:0;background:none;font-size:16px;height:30px;width:100%;padding:0}
+.field input:focus{outline:0}
+.field:focus-within{box-shadow:inset 3px 0 0 var(--accent);padding-left:10px;margin-left:-10px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0 4px}
+.tag{display:inline-flex;align-items:center;gap:2px;height:34px;padding:0 4px 0 12px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:500}
+.tag button{width:28px;height:28px;border-radius:50%;color:inherit;font-size:16px;line-height:1}
+.add{display:flex;gap:8px;margin-top:10px}
+.add input,.add textarea{flex:1;min-width:0;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:0 12px}
+.add textarea{height:auto;min-height:46px;padding:10px 12px;resize:vertical;line-height:1.5}
+.add input[type=date]{flex:none;width:150px}
+.btn{height:46px;padding:0 18px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:600;
+  transition:transform .15s var(--ease)}
+.btn:active{transform:scale(.95)}
+.btn.ghost{background:none;color:var(--danger);border:1px solid var(--line)}
+.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .body{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;line-height:1.55}
+.item .body small{display:block;color:var(--muted);font-size:13px}
+.item .x{width:36px;height:36px;margin:-6px -8px -6px 0;color:var(--muted);border-radius:50%}
+.item .x:hover{color:var(--danger)}
+.chk{flex:none;width:26px;height:26px;margin-top:2px;accent-color:var(--accent)}
+.done .body{text-decoration:line-through;color:var(--muted)}
+.due{color:var(--warn);font-weight:600}
+.danger-zone{margin:30px 0 10px;display:flex;justify-content:center}
+
+dialog{border:0;border-radius:20px;padding:20px;background:var(--surface);color:var(--ink);width:min(420px,calc(100vw - 24px));
+  box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(5,15,14,.55)}
+dialog h3{font:700 20px var(--head);letter-spacing:-.02em;margin-bottom:12px}
+dialog form{display:flex;flex-direction:column;gap:10px}
+dialog input{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:0 14px}
+dialog .actions{display:flex;gap:8px;margin-top:6px}
+dialog .actions .btn{flex:1}
+.menu-btn{width:100%;text-align:left;padding:12px 4px;border-bottom:1px solid var(--line);min-height:48px}
+.menu-btn small{display:block;color:var(--muted);font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:20;
+  animation:toast .25s var(--ease)}
+@keyframes toast{from{opacity:0;transform:translate(-50%,8px)}}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top" id="top"><div class="wrap">
+  <div class="bar">
+    <h1>Knowbook</h1>
+    <button class="icon-btn" id="menuBtn" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
+    </button>
+  </div>
+  <div class="search">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Search names, tags, notes" autocomplete="off" aria-label="Search">
+  </div>
+</div></header>
+
+<main class="wrap" id="view"></main>
+
+<nav class="tabs"><div class="in">
+  <a class="tab" id="t-recent" href="#/">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Recent</a>
+  <a class="tab" id="t-all" href="#/all">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.2 3.5 5.2"/></svg>Everyone</a>
+  <button class="fab" id="addBtn" aria-label="Add person">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  <a class="tab" id="t-todos" href="#/todos">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>To-dos</a>
+</div></nav>
+
+<dialog id="addDlg"><form method="dialog" id="addForm">
+  <h3>Add person</h3>
+  <input id="addName" placeholder="Name" required autocomplete="off">
+  <input id="addMet" placeholder="Where or how did you meet?" autocomplete="off">
+  <div class="actions"><button type="button" class="btn ghost" id="addCancel" style="color:var(--ink)">Cancel</button><button class="btn">Add person</button></div>
+</form></dialog>
+
+<dialog id="menuDlg">
+  <h3>Knowbook</h3>
+  <button class="menu-btn" id="mTheme">Theme<small id="mThemeVal"></small></button>
+  <button class="menu-btn" id="mExport">Export backup<small>Download all data as a JSON file</small></button>
+  <button class="menu-btn" id="mImport">Import backup<small>Replace everything with a backup file</small></button>
+  <input type="file" id="importFile" accept="application/json" hidden>
+  <input type="file" id="photoFile" accept="image/*" hidden>
+  <div class="actions" style="margin-top:14px"><button class="btn" id="mClose" style="flex:1">Close</button></div>
+</dialog>
+
+<script>
+const KEY='knowbook.v1', DAY=864e5;
+const $=s=>document.querySelector(s);
+let db=load(), q='', activeTag='';
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));return d&&d.people?d:{people:[]}}catch{return{people:[]}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch{toast('Storage is full. Export a backup and remove photos.')}}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId=id=>db.people.find(p=>p.id===id);
+const fmt=d=>d?new Date(d+(d.length===10?'T00:00':'')).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';
+const hue=n=>[...(n||'?')].reduce((a,c)=>a+c.charCodeAt(0)*37,0)%360;
+const initials=n=>(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?';
+const av=(p,lg)=>`<span class="av${lg?' lg':''}" style="--h:${hue(p.name)}">${p.photo?`<img src="${p.photo}" alt="">`:esc(initials(p.name))}</span>`;
+const ago=ts=>{const n=Math.floor((Date.now()-ts)/DAY);return n<1?'Today':n===1?'Yesterday':n<30?n+' days ago':fmt(new Date(ts).toISOString().slice(0,10))};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2600)}
+
+function newPerson(name,met){const now=Date.now();const p={id:uid(),name:name.trim(),photo:'',met:met||'',dateMet:new Date().toISOString().slice(0,10),
+  contact:'',birthday:'',tags:[],notes:[],todos:[],events:[],created:now,viewed:now};db.people.push(p);save();return p}
+
+function row(p,right,note){
+  const sub=note?`<small class="${note.warn?'due':''}">${esc(note.text)}</small>`
+    :`${p.met||p.contact?`<small>${esc(p.met||p.contact)}</small>`:''}${p.tags.length?`<small>${p.tags.map(t=>'#'+esc(t)).join(' ')}</small>`:''}`;
+  return `<a class="row" href="#/p/${p.id}">${av(p)}<span class="rt"><b>${esc(p.name||'Unnamed')}</b>${sub}</span>${right?`<time>${right}</time>`:''}</a>`}
+
+function daysUntilBirthday(b){
+  if(!b)return null;const [,m,d]=b.split('-').map(Number);const t=new Date();t.setHours(0,0,0,0);
+  let n=new Date(t.getFullYear(),m-1,d);if(n<t)n=new Date(t.getFullYear()+1,m-1,d);return Math.round((n-t)/DAY)}
+function upcoming(){
+  const out=[],t=new Date();t.setHours(0,0,0,0);
+  for(const p of db.people){
+    const b=daysUntilBirthday(p.birthday);
+    if(b!==null&&b<=7)out.push({p,d:b,label:b===0?'Birthday today':b===1?'Birthday tomorrow':`Birthday in ${b} days`});
+    for(const td of p.todos){if(td.done||!td.due)continue;
+      const d=Math.round((new Date(td.due+'T00:00')-t)/DAY);
+      if(d<=7)out.push({p,d,label:d<0?`Overdue: ${td.text}`:d===0?`Due today: ${td.text}`:`Due in ${d}d: ${td.text}`,warn:d<=0})}}
+  return out.sort((a,b)=>a.d-b.d)}
+
+function section(title,people,right){
+  if(!people.length)return'';
+  return `<section class="group"><h2>${title}<em>${people.length}</em></h2><div class="list">${people.map(p=>row(p,right(p))).join('')}</div></section>`}
+
+function vRecent(){
+  if(!db.people.length)return `<div class="empty"><b>No one here yet</b>Tap + to add the first person you meet.</div>`;
+  const now=Date.now(),sorted=[...db.people].sort((a,b)=>b.created-a.created);
+  const week=sorted.filter(p=>now-p.created<7*DAY), month=sorted.filter(p=>now-p.created>=7*DAY&&now-p.created<30*DAY);
+  const up=upcoming();
+  const look=db.people.filter(p=>now-p.created>=3*DAY&&now-(p.viewed||p.created)>=7*DAY).sort((a,b)=>(a.viewed||a.created)-(b.viewed||b.created)).slice(0,3);
+  return (up.length?`<div class="upcoming"><h2>Coming up</h2>${up.map(u=>row(u.p,'',{text:u.label,warn:u.warn})).join('')}</div>`:'')
+  + section('This week',week,p=>ago(p.created))
+  + section('This month',month,p=>ago(p.created))
+  + (look.length?`<section class="group"><h2 class="sm">Worth a look<em>not opened in a while</em></h2><div class="list">${look.map(p=>row(p,'')).join('')}</div></section>`:'')
+  + (!week.length&&!month.length?`<div class="empty"><b>No one new this month</b>Everyone you add shows up here for 30 days.</div>`:'')}
+
+function vAll(){
+  const tags=[...new Set(db.people.flatMap(p=>p.tags))].sort();
+  let list=db.people.filter(p=>!activeTag||p.tags.includes(activeTag)).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!db.people.length)return `<div class="empty"><b>Your Knowbook is empty</b>Tap + to add someone.</div>`;
+  let h=tags.length?`<div class="chips">${tags.map(t=>`<button class="chip" data-act="tag" data-v="${esc(t)}" aria-pressed="${t===activeTag}">${esc(t)}</button>`).join('')}</div>`:'';
+  let last='';h+='<div class="list">';
+  for(const p of list){const l=(p.name||'#')[0].toUpperCase();if(l!==last){h+=`<div class="letter">${esc(l)}</div>`;last=l}h+=row(p,'')}
+  return h+'</div>'}
+
+function vTodos(){
+  const items=db.people.flatMap(p=>p.todos.filter(t=>!t.done).map(t=>({p,t})));
+  if(!items.length)return `<div class="empty"><b>Nothing to follow up on</b>Add to-dos from a person's profile.</div>`;
+  const today=new Date().toISOString().slice(0,10);
+  items.sort((a,b)=>(a.t.due||'9999').localeCompare(b.t.due||'9999'));
+  return `<div class="list" style="margin-top:14px">${items.map(({p,t})=>`<div class="item"><input type="checkbox" class="chk" data-act="tick" data-p="${p.id}" data-t="${t.id}" aria-label="Done">
+    <a class="body" href="#/p/${p.id}">${esc(t.text)}<small>${esc(p.name)}${t.due?` · <span class="${t.due<today?'due':''}">${fmt(t.due)}</span>`:''}</small></a></div>`).join('')}</div>`}
+
+function vSearch(){
+  const s=q.trim().toLowerCase();
+  const hit=p=>[p.name,p.met,p.contact,...p.tags,...p.notes.map(n=>n.text),...p.todos.map(t=>t.text),...p.events.map(e=>e.text)].some(x=>(x||'').toLowerCase().includes(s));
+  const res=db.people.filter(hit).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  const exact=db.people.some(p=>p.name.toLowerCase()===s);
+  return (exact?'':`<a class="row" href="#" data-act="quick" style="margin-top:10px"><span class="av" style="--h:${hue(q)}">+</span><span class="rt"><b>Add "${esc(q.trim())}"</b><small>Create a new profile</small></span></a>`)
+   +(res.length?`<div class="list">${res.map(p=>row(p,'')).join('')}</div>`:`<div class="empty">No matches for "${esc(q.trim())}".</div>`)}
+
+function vProfile(p){
+  const today=new Date().toISOString().slice(0,10);
+  const todos=[...p.todos].sort((a,b)=>a.done-b.done||(a.due||'9999').localeCompare(b.due||'9999'));
+  const f=(k,l,type='text')=>`<div class="field"><label for="f-${k}">${l}</label><input id="f-${k}" type="${type}" data-f="${k}" value="${esc(p[k])}" autocomplete="off"></div>`;
+  const allTags=[...new Set(db.people.flatMap(x=>x.tags))];
+  return `<div class="pbar"><button class="icon-btn" data-act="back" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button>
+    ${p.photo?`<button class="icon-btn" data-act="rmphoto">Remove photo</button>`:''}</div>
+  <div class="phead"><button class="av lg" style="--h:${hue(p.name)}" data-act="photo" aria-label="Change photo">${p.photo?`<img src="${p.photo}" alt="">`:esc(initials(p.name))}</button>
+    <input class="name" data-f="name" value="${esc(p.name)}" aria-label="Name" placeholder="Name" autocomplete="off"></div>
+  <div class="card">${f('met','Where or how we met')}${f('dateMet','Date met','date')}${f('contact','Phone or handle')}${f('birthday','Birthday','date')}</div>
+
+  <section class="group"><h2>Tags<em>${p.tags.length}</em></h2>
+    <div class="tags">${p.tags.map(t=>`<span class="tag">${esc(t)}<button data-act="rmtag" data-v="${esc(t)}" aria-label="Remove ${esc(t)}">×</button></span>`).join('')}</div>
+    <form class="add" data-form="tag"><input name="v" list="taglist" placeholder="Tag, like 'tall' or 'gym'" autocomplete="off" required><button class="btn">Add</button></form>
+    <datalist id="taglist">${allTags.map(t=>`<option value="${esc(t)}">`).join('')}</datalist></section>
+
+  <section class="group"><h2>To-dos<em>${p.todos.filter(t=>!t.done).length} open</em></h2>
+    ${todos.map(t=>`<div class="item ${t.done?'done':''}"><input type="checkbox" class="chk" data-act="tick" data-p="${p.id}" data-t="${t.id}" ${t.done?'checked':''} aria-label="Done">
+      <div class="body">${esc(t.text)}${t.due?`<small class="${!t.done&&t.due<today?'due':''}">${fmt(t.due)}</small>`:''}</div>
+      <button class="x" data-act="rmtodo" data-v="${t.id}" aria-label="Delete">×</button></div>`).join('')}
+    <form class="add" data-form="todo" style="flex-wrap:wrap"><input name="v" placeholder="Ask about their trip" required style="flex-basis:100%"><input name="due" type="date" aria-label="Due date"><button class="btn">Add to-do</button></form></section>
+
+  <section class="group"><h2>Events<em>${p.events.length}</em></h2>
+    ${[...p.events].sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`<div class="item"><div class="body"><small>${fmt(e.date)}</small>${esc(e.text)}</div><button class="x" data-act="rmevent" data-v="${e.id}" aria-label="Delete">×</button></div>`).join('')}
+    <form class="add" data-form="event" style="flex-wrap:wrap"><input name="v" placeholder="What happened" required style="flex-basis:100%"><input name="date" type="date" value="${today}" aria-label="Date" required><button class="btn">Add event</button></form></section>
+
+  <section class="group"><h2>Notes<em>${p.notes.length}</em></h2>
+    ${[...p.notes].sort((a,b)=>b.t-a.t).map(n=>`<div class="item"><div class="body"><small>${fmt(new Date(n.t).toISOString().slice(0,10))}</small>${esc(n.text)}</div><button class="x" data-act="rmnote" data-v="${n.id}" aria-label="Delete">×</button></div>`).join('')}
+    <form class="add" data-form="note"><textarea name="v" rows="2" placeholder="Write a note" required></textarea><button class="btn">Add</button></form></section>
+
+  <div class="danger-zone"><button class="btn ghost" data-act="del">Delete ${esc(p.name||'this person')}</button></div>`}
+
+function render(focus){
+  const h=location.hash||'#/', m=h.match(/^#\/p\/(.+)$/), p=m&&byId(m[1]);
+  const view=$('#view'), y=scrollY;
+  $('#top .search').hidden=!!p; document.querySelector('.bar').hidden=!!p;
+  document.querySelectorAll('.tab').forEach(t=>t.removeAttribute('aria-current'));
+  if(p){
+    p.viewed=Date.now();save();
+    view.innerHTML=vProfile(p);
+  }else{
+    const tab=h.startsWith('#/all')?'all':h.startsWith('#/todos')?'todos':'recent';
+    $('#t-'+tab).setAttribute('aria-current','page');
+    view.innerHTML=q.trim()?vSearch():tab==='all'?vAll():tab==='todos'?vTodos():vRecent();
+  }
+  if(focus){const el=view.querySelector(focus);el&&el.focus()}else if(!p||y)scrollTo(0,y)}
+addEventListener('hashchange',()=>{scrollTo(0,0);render()});
+
+const cur=()=>{const m=location.hash.match(/^#\/p\/(.+)$/);return m&&byId(m[1])};
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,v=b.dataset.v,p=cur();
+  if(a==='back'){history.length>1?history.back():location.hash='#/'}
+  else if(a==='tag'){activeTag=activeTag===v?'':v;render()}
+  else if(a==='quick'){e.preventDefault();const n=newPerson(q.trim());q='';$('#q').value='';location.hash='#/p/'+n.id}
+  else if(a==='tick'){const pp=byId(b.dataset.p),t=pp.todos.find(x=>x.id===b.dataset.t);t.done=b.checked;save();setTimeout(()=>render(),200)}
+  else if(a==='photo')$('#photoFile').click();
+  else if(a==='rmphoto'){p.photo='';save();render()}
+  else if(a==='rmtag'){p.tags=p.tags.filter(t=>t!==v);save();render('[data-form=tag] input')}
+  else if(a==='rmtodo'){p.todos=p.todos.filter(t=>t.id!==v);save();render()}
+  else if(a==='rmevent'){p.events=p.events.filter(t=>t.id!==v);save();render()}
+  else if(a==='rmnote'){p.notes=p.notes.filter(t=>t.id!==v);save();render()}
+  else if(a==='del'&&confirm(`Delete ${p.name||'this person'} and everything saved about them?`)){db.people=db.people.filter(x=>x!==p);save();location.hash='#/'}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='q'){q=e.target.value;render();return}
+  const k=e.target.dataset.f,p=cur();if(!k||!p)return;p[k]=e.target.value;save();
+  if(k==='name'){const a=$('.av.lg');if(!p.photo)a.textContent=initials(p.name);a.style.setProperty('--h',hue(p.name))}});
+document.addEventListener('submit',e=>{
+  const f=e.target.dataset.form;if(!f)return;e.preventDefault();
+  const p=cur(),d=Object.fromEntries(new FormData(e.target)),v=d.v.trim();if(!v)return;
+  if(f==='tag'){const t=v.toLowerCase();if(!p.tags.includes(t))p.tags.push(t)}
+  else if(f==='todo')p.todos.push({id:uid(),text:v,due:d.due||'',done:false});
+  else if(f==='event')p.events.push({id:uid(),date:d.date,text:v});
+  else if(f==='note')p.notes.push({id:uid(),t:Date.now(),text:v});
+  save();render(`[data-form=${f}] [name=v]`)});
+
+// add dialog
+$('#addBtn').onclick=()=>{$('#addForm').reset();$('#addName').value=q.trim();$('#addDlg').showModal();$('#addName').focus()};
+$('#addCancel').onclick=()=>$('#addDlg').close();
+$('#addForm').onsubmit=()=>{const n=$('#addName').value.trim();if(!n)return;const p=newPerson(n,$('#addMet').value.trim());q='';$('#q').value='';location.hash='#/p/'+p.id};
+
+// photo: small on purpose
+$('#photoFile').onchange=e=>{
+  const file=e.target.files[0],p=cur();e.target.value='';if(!file||!p)return;
+  const img=new Image();img.onload=()=>{
+    const s=256,r=Math.min(1,s/Math.max(img.width,img.height)),c=document.createElement('canvas');
+    c.width=img.width*r;c.height=img.height*r;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    p.photo=c.toDataURL('image/jpeg',.7);save();render();URL.revokeObjectURL(img.src)};
+  img.src=URL.createObjectURL(file)};
+
+// menu, theme, backup
+const themes=['auto','light','dark'];
+function applyTheme(){const t=localStorage.getItem('knowbook.theme')||'auto';
+  t==='auto'?document.documentElement.removeAttribute('data-theme'):document.documentElement.dataset.theme=t;$('#mThemeVal').textContent=t[0].toUpperCase()+t.slice(1)}
+$('#menuBtn').onclick=()=>$('#menuDlg').showModal();
+$('#mClose').onclick=()=>$('#menuDlg').close();
+$('#mTheme').onclick=()=>{const t=localStorage.getItem('knowbook.theme')||'auto';localStorage.setItem('knowbook.theme',themes[(themes.indexOf(t)+1)%3]);applyTheme()};
+$('#mExport').onclick=()=>{const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'}));
+  a.download=`knowbook-${new Date().toISOString().slice(0,10)}.json`;a.click();toast('Backup downloaded')};
+$('#mImport').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const d=JSON.parse(await f.text());if(!Array.isArray(d.people))throw 0;
+    if(!confirm(`Replace all data with this backup (${d.people.length} people)?`))return;
+    db=d;save();$('#menuDlg').close();render();toast('Backup imported')}catch{toast('That file is not a Knowbook backup.')}};
+
+applyTheme();render();
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
